@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import logo from '../assets/logo.jpeg';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -10,13 +11,14 @@ export default function Footer() {
           {/* Brand & Mission */}
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-violet-500 flex items-center justify-center shadow-glow">
-                <span className="text-white font-black text-sm">P</span>
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-violet-500 flex items-center justify-center shadow-glow">
+                <img src={logo} alt="ProCufy Logo" className="w-full h-full object-cover scale-110" />
               </div>
               <span className="text-xl font-black tracking-tight bg-gradient-to-r from-primary-400 to-violet-400 bg-clip-text text-transparent">
                 ProCufy
               </span>
             </Link>
+
             <p className="text-dark-subtle text-sm leading-relaxed max-w-xs">
               Elevating your digital lifestyle with curated tech and lifestyle products. 
               Premium quality, futuristic design, and unmatched service.

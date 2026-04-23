@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useEffect, useState } from 'react';
+import logo from '../assets/logo.jpeg';
 
 const navLinks = [
   { to: '/',          label: 'Home' },
@@ -57,13 +58,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group" id="nav-logo">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-violet-500 flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all duration-300">
-              <span className="text-white font-black text-sm">P</span>
+            <div className="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-violet-500 flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all duration-300">
+              <img src={logo} alt="ProCufy Logo" className="w-full h-full object-cover scale-110" />
             </div>
             <span className="text-xl font-black tracking-tight bg-gradient-to-r from-primary-400 to-violet-400 bg-clip-text text-transparent">
               ProCufy
             </span>
           </Link>
+
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
