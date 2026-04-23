@@ -1,11 +1,15 @@
-import { createContext, useContext, useReducer } from 'react';
+import { createContext, useContext, useReducer, useEffect } from 'react';
 
 const CartContext = createContext(null);
+
+const STORAGE_KEY = 'procufy-cart';
 
 const initialState = { items: [] };
 
 function cartReducer(state, action) {
   switch (action.type) {
+    case 'SET_CART':
+      return { ...state, items: action.items };
     case 'ADD': {
       const exists = state.items.find(i => i.product.id === action.product.id);
       if (exists) {
@@ -39,6 +43,26 @@ function cartReducer(state, action) {
 export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
+  // Load from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const items = JSON.parse(saved);
+        if (Array.isArray(items)) {
+          dispatch({ type: 'SET_CART', items });
+        }
+      } catch (err) {
+        console.error('Failed to load cart:', err);
+      }
+    }
+  }, []);
+
+  // Save to localStorage on change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
+  }, [state.items]);
+
   const addToCart   = (product, qty = 1) => dispatch({ type: 'ADD', product, qty });
   const removeFromCart = (id)            => dispatch({ type: 'REMOVE', id });
   const updateQty   = (id, qty)          => dispatch({ type: 'UPDATE_QTY', id, qty });
@@ -59,3 +83,4 @@ export function useCart() {
   if (!ctx) throw new Error('useCart must be used inside CartProvider');
   return ctx;
 }
+

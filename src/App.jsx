@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import ProductListing from './pages/ProductListing';
 import ProductDetails from './pages/ProductDetails';
@@ -24,18 +25,22 @@ export default function App() {
   return (
     <BrowserRouter>
       <CartProvider>
-        <div className="min-h-screen bg-dark-bg text-dark-text">
+        <div className="min-h-screen bg-dark-bg text-dark-text flex flex-col">
           <Navbar />
-          <Routes>
-            <Route path="/"              element={<Home />} />
-            <Route path="/products"      element={<ProductListing />} />
-            <Route path="/products/:id"  element={<ProductDetails />} />
-            <Route path="/cart"          element={<Cart />} />
-            <Route path="/dashboard"     element={<Dashboard />} />
-            <Route path="*"              element={<NotFound />} />
-          </Routes>
+          <div className="flex-grow">
+            <Routes>
+              <Route path="/"              element={<Home />} />
+              <Route path="/products"      element={<ProductListing />} />
+              <Route path="/products/:id"  element={<ProductDetails />} />
+              <Route path="/cart"          element={<Cart />} />
+              <Route path="/dashboard"     element={<Dashboard />} />
+              <Route path="*"              element={<NotFound />} />
+            </Routes>
+          </div>
+          <Footer />
         </div>
       </CartProvider>
     </BrowserRouter>
   );
 }
+
