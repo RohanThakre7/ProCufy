@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useEffect, useState } from 'react';
 
@@ -11,9 +11,11 @@ const navLinks = [
 export default function Navbar() {
   const { totalItems } = useCart();
   const location = useLocation();
+  const navigate = useNavigate();
   const [dark, setDark] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const stored = localStorage.getItem('procufy-theme');
@@ -33,6 +35,14 @@ export default function Navbar() {
     setDark(next);
     document.documentElement.classList.toggle('dark', next);
     localStorage.setItem('procufy-theme', next ? 'dark' : 'light');
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setMenuOpen(false);
+    }
   };
 
   return (
@@ -75,6 +85,20 @@ export default function Navbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-3">
+            {/* Search Bar (Desktop) */}
+            <form onSubmit={handleSearch} className="hidden lg:flex items-center relative">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-gray-100 dark:bg-dark-card border border-transparent focus:border-primary-500/50 rounded-xl px-4 py-1.5 pl-10 text-sm w-48 focus:w-64 transition-all duration-300 text-dark-text outline-none"
+              />
+              <svg className="w-4 h-4 absolute left-3 text-dark-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
+            </form>
+
             {/* Theme toggle */}
             <button
               id="theme-toggle"
@@ -133,6 +157,16 @@ export default function Navbar() {
         {/* Mobile menu */}
         {menuOpen && (
           <div className="md:hidden pb-4 animate-slide-up">
+            {/* Mobile Search */}
+            <form onSubmit={handleSearch} className="px-4 py-2 mb-2">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-gray-100 dark:bg-dark-card border border-dark-border rounded-xl px-4 py-2 text-sm text-dark-text outline-none focus:border-primary-500/50"
+              />
+            </form>
             {navLinks.map(link => (
               <Link
                 key={link.to}
@@ -153,3 +187,4 @@ export default function Navbar() {
     </nav>
   );
 }
+

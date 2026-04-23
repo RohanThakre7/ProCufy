@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Filter from '../components/Filter';
 import products from '../data/products.json';
@@ -6,11 +7,28 @@ import products from '../data/products.json';
 const DEFAULT_PRICE = { min: 0, max: Infinity };
 
 export default function ProductListing() {
-  const [search, setSearch]         = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch]         = useState(searchParams.get('search') || '');
   const [category, setCategory]     = useState('All');
   const [priceRange, setPriceRange] = useState(DEFAULT_PRICE);
   const [sort, setSort]             = useState('default');
   const [filterOpen, setFilterOpen] = useState(false);
+
+  // Sync state with URL params
+  useEffect(() => {
+    const q = searchParams.get('search');
+    if (q !== null) setSearch(q);
+  }, [searchParams]);
+
+  // Update URL when search state changes
+  const handleSearchChange = (val) => {
+    setSearch(val);
+    if (val.trim()) {
+      setSearchParams({ search: val.trim() });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   const filtered = useMemo(() => {
     let list = [...products];
@@ -32,6 +50,7 @@ export default function ProductListing() {
 
   const resetFilters = () => {
     setSearch(''); setCategory('All'); setPriceRange(DEFAULT_PRICE); setSort('default');
+    setSearchParams({});
   };
 
   const activeFilters = category !== 'All' || priceRange.min > 0 || priceRange.max !== Infinity || sort !== 'default';
@@ -49,9 +68,16 @@ export default function ProductListing() {
           <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-subtle pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
-          <input id="product-search" type="text" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} className="input-field pl-11" />
+          <input
+            id="product-search"
+            type="text"
+            placeholder="Search products..."
+            value={search}
+            onChange={e => handleSearchChange(e.target.value)}
+            className="input-field pl-11"
+          />
           {search && (
-            <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-subtle hover:text-dark-text transition-colors">
+            <button onClick={() => handleSearchChange('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-subtle hover:text-dark-text transition-colors">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           )}
@@ -98,3 +124,4 @@ export default function ProductListing() {
     </main>
   );
 }
+

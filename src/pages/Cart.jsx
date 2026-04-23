@@ -1,41 +1,20 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 const TAX_RATE = 0.18;
 
 export default function Cart() {
   const { items, removeFromCart, updateQty, clearCart, totalPrice } = useCart();
-  const [checkedOut, setCheckedOut] = useState(false);
+  const navigate = useNavigate();
 
   const tax = Math.round(totalPrice * TAX_RATE);
   const grandTotal = totalPrice + tax;
 
   const handleCheckout = () => {
-    clearCart();
-    setCheckedOut(true);
+    navigate('/checkout');
   };
 
-  if (checkedOut) {
-    return (
-      <main className="min-h-screen bg-dark-bg pt-24 flex items-center justify-center">
-        <div className="text-center animate-slide-up max-w-md mx-auto px-6">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(16,185,129,0.4)]">
-            <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-black text-dark-text mb-3">Order Placed!</h1>
-          <p className="text-dark-subtle text-lg mb-8">
-            Thanks for shopping with ProCufy. Your order is being processed.
-          </p>
-          <Link to="/products" className="btn-primary justify-center">
-            Continue Shopping
-          </Link>
-        </div>
-      </main>
-    );
-  }
 
   if (items.length === 0) {
     return (

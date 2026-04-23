@@ -7,6 +7,8 @@ import ProductListing from './pages/ProductListing';
 import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import Dashboard from './pages/Dashboard';
+import Checkout from './pages/Checkout';
+import OrderSuccess from './pages/OrderSuccess';
 
 function NotFound() {
   return (
@@ -34,6 +36,8 @@ export default function App() {
               <Route path="/products/:id"  element={<ProductDetails />} />
               <Route path="/cart"          element={<Cart />} />
               <Route path="/dashboard"     element={<Dashboard />} />
+              <Route path="/checkout"      element={<Checkout />} />
+              <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="*"              element={<NotFound />} />
             </Routes>
           </div>
